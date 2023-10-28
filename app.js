@@ -2,14 +2,13 @@ const fs = require('fs');
 const express = require('express');
 
 const app = express();
-
 app.use(express.json());
 
 const learningSession = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/learningsession-simple.json`)
 );
 
-app.get('/api/v1/skillswap', (req, res) => {
+const getAllSessions = (req, res) => {
   res.status(200).json({
     status: 'success',
     results: learningSession.length,
@@ -17,28 +16,9 @@ app.get('/api/v1/skillswap', (req, res) => {
       learningSession,
     },
   });
-});
+};
 
-app.post('/api/v1/skillswap', (req, res) => {
-  //console.log(req.body);
-  const newId = learningSession[learningSession.length - 1].id + 1;
-  const newLearningSession = Object.assign({ id: newId }, req.body);
-  learningSession.push(newLearningSession);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/learningsession-simple.json`,
-    JSON.stringify(learningSession),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          learningSession: newLearningSession,
-        },
-      });
-    }
-  );
-});
-
-app.get('/api/v1/skillswap/:id', (req, res) => {
+const getSession = (req, res) => {
   console.log(req.params);
 
   const id = req.params.id * 1;
@@ -57,9 +37,28 @@ app.get('/api/v1/skillswap/:id', (req, res) => {
       learningSessions,
     },
   });
-});
+};
 
-app.patch('/api/v1/skillswap/:id', (req, res) => {
+const createSession = (req, res) => {
+  //console.log(req.body);
+  const newId = learningSession[learningSession.length - 1].id + 1;
+  const newLearningSession = Object.assign({ id: newId }, req.body);
+  learningSession.push(newLearningSession);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/learningsession-simple.json`,
+    JSON.stringify(learningSession),
+    (err) => {
+      res.status(201).json({
+        status: 'success',
+        data: {
+          learningSession: newLearningSession,
+        },
+      });
+    }
+  );
+};
+
+const updateSession = (req, res) => {
   console.log(req.params);
 
   const id = req.params.id * 1;
@@ -78,9 +77,9 @@ app.patch('/api/v1/skillswap/:id', (req, res) => {
       learningSessions: '<Updated learningSessions here...>',
     },
   });
-});
+};
 
-app.delete('/api/v1/skillswap/:id', (req, res) => {
+const deleteSession = (req, res) => {
   console.log(req.params);
 
   const id = req.params.id * 1;
@@ -97,7 +96,14 @@ app.delete('/api/v1/skillswap/:id', (req, res) => {
     status: 'success',
     data: null,
   });
-});
+};
+
+app.get('/api/v1/skillswap', getAllSessions);
+app.get('/api/v1/skillswap/:id', getSession);
+app.post('/api/v1/skillswap', createSession);
+app.patch('/api/v1/skillswap/:id', updateSession);
+
+app.delete('/api/v1/skillswap/:id', deleteSession);
 
 const port = 3000;
 
