@@ -98,12 +98,12 @@ const deleteSession = (req, res) => {
   });
 };
 
-app.get('/api/v1/skillswap', getAllSessions);
-app.get('/api/v1/skillswap/:id', getSession);
-app.post('/api/v1/skillswap', createSession);
-app.patch('/api/v1/skillswap/:id', updateSession);
-
-app.delete('/api/v1/skillswap/:id', deleteSession);
+app.route('/api/v1/skillswap').get(getAllSessions).post(createSession);
+app
+  .route('/api/v1/skillswap/:id')
+  .get(getSession)
+  .patch(updateSession)
+  .delete(deleteSession);
 
 const port = 3000;
 
