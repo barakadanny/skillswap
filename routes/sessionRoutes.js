@@ -7,7 +7,7 @@ router.param('id', sessionController.checkId);
 router
   .route('/')
   .get(sessionController.getAllSessions)
-  .post(sessionController.createSession);
+  .post(sessionController.checkBody, sessionController.createSession);
 
 router
   .route('/:id')
