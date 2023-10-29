@@ -16,8 +16,4 @@ app.use(express.json());
 app.use('/api/v1/sessions', sessionRouter);
 app.use('/api/v1/users', userRouter);
 
-const port = 3000;
-
-app.listen(port, () => {
-  console.log(`Server started on port ${port}`);
-});
+module.exports = app;
