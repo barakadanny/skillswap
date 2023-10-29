@@ -4,6 +4,18 @@ const learningSession = JSON.parse(
   fs.readFileSync(`${__dirname}/../dev-data/data/learningsession-simple.json`)
 );
 
+exports.checkId = (req, res, next, val) => {
+  console.log(`session id is: ${val}`);
+
+  if (req.params.id * 1 > learningSession.length) {
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
+  next();
+};
+
 exports.getAllSessions = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -17,20 +29,10 @@ exports.getAllSessions = (req, res) => {
 exports.getSession = (req, res) => {
   console.log(req.params);
 
-  const id = req.params.id * 1;
-  const learningSessions = learningSession.find((el) => el.id === id);
-
-  if (!learningSessions) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
-      learningSessions,
+      learningSession,
     },
   });
 };
@@ -55,18 +57,6 @@ exports.createSession = (req, res) => {
 };
 
 exports.updateSession = (req, res) => {
-  console.log(req.params);
-
-  const id = req.params.id * 1;
-  const learningSessions = learningSession.find((el) => el.id === id);
-
-  if (!learningSessions) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
-
   res.status(200).json({
     status: 'success',
     data: {
@@ -77,16 +67,6 @@ exports.updateSession = (req, res) => {
 
 exports.deleteSession = (req, res) => {
   console.log(req.params);
-
-  const id = req.params.id * 1;
-  const learningSessions = learningSession.find((el) => el.id === id);
-
-  if (!learningSessions) {
-    return res.status(404).json({
-      status: 'fail',
-      message: 'Invalid ID',
-    });
-  }
 
   res.status(204).json({
     status: 'success',
