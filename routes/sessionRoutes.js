@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const sessionController = require('./../controllers/sessionController');
 
+router.param('id', sessionController.checkId);
+
 router
   .route('/')
   .get(sessionController.getAllSessions)
