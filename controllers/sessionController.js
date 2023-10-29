@@ -16,6 +16,16 @@ exports.checkId = (req, res, next, val) => {
   next();
 };
 
+exports.checkBody = (req, res, next) => {
+  if (!req.body.subject || !req.body.summary) {
+    return res.status(400).json({
+      status: 'fail',
+      message: 'Missing name or summary',
+    });
+  }
+  next();
+};
+
 exports.getAllSessions = (req, res) => {
   res.status(200).json({
     status: 'success',
