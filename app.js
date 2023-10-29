@@ -1,13 +1,19 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 
 const app = express();
+
+// 1) MIDDLEWARE
+app.use(morgan('dev'));
+
 app.use(express.json());
 
 const learningSession = JSON.parse(
   fs.readFileSync(`${__dirname}/dev-data/data/learningsession-simple.json`)
 );
 
+// 2) ROUTE HANDLER
 const getAllSessions = (req, res) => {
   res.status(200).json({
     status: 'success',
@@ -98,12 +104,57 @@ const deleteSession = (req, res) => {
   });
 };
 
+const getAllUsers = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const getUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const createUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const updateUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+const deleteUser = (req, res) => {
+  res.status(500).json({
+    status: 'error',
+    message: 'This route is not yet defined',
+  });
+};
+
+// 3) ROUTES
 app.route('/api/v1/skillswap').get(getAllSessions).post(createSession);
+
 app
   .route('/api/v1/skillswap/:id')
   .get(getSession)
   .patch(updateSession)
   .delete(deleteSession);
+
+app.route('/api/v1/users').get(getAllUsers).post(createUser);
+
+app
+  .route('/api/v1/users/:id')
+  .get(getUser)
+  .patch(updateUser)
+  .delete(deleteUser);
 
 const port = 3000;
 
