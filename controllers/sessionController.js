@@ -1,85 +1,90 @@
-const fs = require('fs');
+const Session = require('./../models/sessionModel');
 
-const learningSession = JSON.parse(
-  fs.readFileSync(`${__dirname}/../dev-data/data/learningsession-simple.json`)
-);
+exports.getAllSessions = async (req, res) => {
+  try {
+    const sessions = await Session.find();
 
-exports.checkId = (req, res, next, val) => {
-  console.log(`session id is: ${val}`);
+    res.status(200).json({
+      status: 'success',
+      results: sessions.length,
+      data: {
+        sessions,
+      },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: 'fail',
+      message: error,
+    });
+  }
+};
 
-  if (req.params.id * 1 > learningSession.length) {
-    return res.status(404).json({
+exports.getSession = async (req, res) => {
+  try {
+    const session = await Session.findById(req.params.id);
+    res.status(200).json({
+      status: 'success',
+      data: {
+        session,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
       status: 'fail',
       message: 'Invalid ID',
     });
   }
-  next();
 };
 
-exports.checkBody = (req, res, next) => {
-  if (!req.body.subject || !req.body.summary) {
-    return res.status(400).json({
+exports.createSession = async (req, res) => {
+  try {
+    const newSession = await Session.create(req.body);
+    res.status(201).json({
+      status: 'success',
+      data: {
+        session: newSession,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
       status: 'fail',
-      message: 'Missing name or summary',
+      message: 'Invalid data sent to server',
     });
   }
-  next();
 };
 
-exports.getAllSessions = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    results: learningSession.length,
-    data: {
-      learningSession,
-    },
-  });
+exports.updateSession = async (req, res) => {
+  try {
+    const session = await Session.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    res.status(200).json({
+      status: 'success',
+      data: {
+        session,
+      },
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid data sent to server',
+    });
+  }
 };
 
-exports.getSession = (req, res) => {
-  console.log(req.params);
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      learningSession,
-    },
-  });
-};
-
-exports.createSession = (req, res) => {
-  //console.log(req.body);
-  const newId = learningSession[learningSession.length - 1].id + 1;
-  const newLearningSession = Object.assign({ id: newId }, req.body);
-  learningSession.push(newLearningSession);
-  fs.writeFile(
-    `${__dirname}/dev-data/data/learningsession-simple.json`,
-    JSON.stringify(learningSession),
-    (err) => {
-      res.status(201).json({
-        status: 'success',
-        data: {
-          learningSession: newLearningSession,
-        },
-      });
-    }
-  );
-};
-
-exports.updateSession = (req, res) => {
-  res.status(200).json({
-    status: 'success',
-    data: {
-      learningSessions: '<Updated learningSessions here...>',
-    },
-  });
-};
-
-exports.deleteSession = (req, res) => {
-  console.log(req.params);
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
+exports.deleteSession = async (req, res) => {
+  try {
+    await Session.findByIdAndDelete(req.params.id);
+    res.status(204).json({
+      status: 'success',
+      data: null,
+    });
+  } catch (error) {
+    res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID',
+    });
+  }
 };
