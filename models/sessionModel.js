@@ -12,11 +12,23 @@ const sessionSchema = new mongoose.Schema({
   summary: {
     type: String,
     required: [true, 'A session must have a summary'],
+    trim: true,
   },
   description: {
     type: String,
     required: [true, 'A session must have a description'],
+    trim: true,
   },
+  imageCover: {
+    type: String,
+    required: [true, 'A session must have a image cover'],
+  },
+  images: [String],
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+  Date: [Date],
 });
 
 const Session = mongoose.model('Session', sessionSchema);
