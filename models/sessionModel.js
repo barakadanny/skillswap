@@ -10,6 +10,7 @@ const sessionSchema = new mongoose.Schema({
   maxParticipant: {
     type: Number,
     required: [true, 'A session must have a max participant'],
+    min: [1, 'A session must have at least 1 participant'],
   },
   summary: {
     type: String,
