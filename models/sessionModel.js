@@ -47,8 +47,6 @@ sessionSchema.pre('save', function (next) {
   next();
 });
 
-sessionSchema.pre('find', function (next) {});
-
 const Session = mongoose.model('Session', sessionSchema);
 
 module.exports = Session;
