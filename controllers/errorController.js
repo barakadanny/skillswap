@@ -43,20 +43,37 @@ const sendErrorProd = (err, res) => {
   }
 };
 
+/**
+ * Handles errors in the Express middleware.
+ *
+ * @param {Error} err - The error object.
+ * @param {object} req - The request object.
+ * @param {object} res - The response object.
+ * @param {function} next - The next middleware function.
+ *
+ * @description In production, this function checks the error type and sends an appropriate response to the client.
+ * To add a new error for a specific thing in production:
+ * - Define a new error object with the necessary properties.
+ * - If the error needs to be handled differently based on its kind, check the error's kind property.
+ * - If the error needs to be handled differently based on its name, check the error's name property.
+ * - If the error needs to be handled differently based on its code, check the error's code property.
+ * - Send the error to the sendErrorProd function for further processing and response.
+ */
 module.exports = (err, req, res, next) => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
+    // check if the error name is equal to CastError, console log a short message
+
+    if (err.name === 'CastError') {
+      console.log('kkkkkkkkkkkkkkkkkkkkkk');
+    }
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    console.log(error);
-    if (error.kind === 'ObjectId') error = handleCastErrorDB(error);
-    //! TODO: CastError is not working, not identified
-    // if CastError work, delete error.kind
-    if (error.name === 'CastError') error = handleCastErrorDB(error);
 
+    if (err.name === 'CastError') error = handleCastErrorDB(error);
     if (error.code === 11000) error = handleDuplicateFieldsDB(error);
 
     sendErrorProd(error, res);
