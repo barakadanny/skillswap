@@ -1,6 +1,7 @@
 const Session = require('./../models/sessionModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 exports.getAllSessions = catchAsync(async (req, res, next) => {
   // EXECUTE QUERY
@@ -23,6 +24,11 @@ exports.getAllSessions = catchAsync(async (req, res, next) => {
 
 exports.getSession = catchAsync(async (req, res, next) => {
   const session = await Session.findById(req.params.id);
+
+  if (!session) {
+    return next(new AppError('No session found with that ID', 404));
+  }
+
   res.status(200).json({
     status: 'success',
     data: {
@@ -48,6 +54,10 @@ exports.updateSession = catchAsync(async (req, res, next) => {
     runValidators: true,
   });
 
+  if (!session) {
+    return next(new AppError('No session found with that ID', 404));
+  }
+
   res.status(200).json({
     status: 'success',
     data: {
@@ -57,7 +67,12 @@ exports.updateSession = catchAsync(async (req, res, next) => {
 });
 
 exports.deleteSession = catchAsync(async (req, res, next) => {
-  await Session.findByIdAndDelete(req.params.id);
+  const session = await Session.findByIdAndDelete(req.params.id);
+
+  if (!session) {
+    return next(new AppError('No session found with that ID', 404));
+  }
+
   res.status(204).json({
     status: 'success',
     data: null,
