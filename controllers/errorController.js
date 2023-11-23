@@ -10,10 +10,20 @@ const handleCastErrorDB = (err) => {
 
 const handleDuplicateFieldsDB = (err) => {
   const value = err.errmsg.match(/(["'])(\\?.)*?\1/)[0];
-
   const message = `Duplicate field value: ${value}. Please use another value!`;
-
   const appError = new AppError(message, 400);
+};
+
+const handleValidationErrorDB = (err) => {
+  const errors = Object.values(err.errors).map((el, index) => {
+    const errorNumber = index + 1;
+    return `${errorNumber}. ${el.message}`;
+  });
+  const message = `Invalid input data: ${errors.join('. ')}`;
+  const appError = new AppError(message, 400);
+
+  appError.isOperational = true;
+  return appError;
 };
 
 const sendErrorDev = (err, res) => {
@@ -74,7 +84,8 @@ module.exports = (err, req, res, next) => {
     let error = { ...err };
 
     if (err.name === 'CastError') error = handleCastErrorDB(error);
-    if (error.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (err.code === 11000) error = handleDuplicateFieldsDB(error);
+    if (err.name === 'ValidationError') error = handleValidationErrorDB(error);
 
     sendErrorProd(error, res);
   }
