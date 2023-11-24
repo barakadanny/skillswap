@@ -98,11 +98,6 @@ module.exports = (err, req, res, next) => {
   err.status = err.status || 'error';
 
   if (process.env.NODE_ENV === 'development') {
-    // check if the error name is equal to CastError, console log a short message
-
-    if (err.name === 'CastError') {
-      console.log('kkkkkkkkkkkkkkkkkkkkkk');
-    }
     sendErrorDev(err, res);
   } else if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
