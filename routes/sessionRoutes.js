@@ -15,6 +15,10 @@ router
   .route('/:id')
   .get(sessionController.getSession)
   .patch(sessionController.updateSession)
-  .delete(sessionController.deleteSession);
+  .delete(
+    authController.protect,
+    authController.restrictTo('user', 'admin'),
+    sessionController.deleteSession
+  );
 
 module.exports = router;
