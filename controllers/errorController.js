@@ -6,20 +6,13 @@ const AppError = require('./../utils/appError');
  *
  * TODO:
  
- * - Flag errors to identify their importance: critical, medium, or less important.
- * - Implement email notification to the administrator whenever an important error occurs.
+ * - Flag errors to identify their importance: 
+ *    critical, medium, or less important.
+ * 
+ * - Implement email notification to 
+ *    the administrator whenever an 
+ *    important error occurs.
  *
- * Step-by-step instructions:
- * 1. To flag errors based on their importance, use the `isOperational` property of the error object.
- *    - Set `isOperational` to `true` for critical errors that require immediate attention.
- *    - Set `isOperational` to `false` for less important errors.
- *    - Modify the `handleCastErrorDB`, `handleDuplicateFieldsDB`, and `handleValidationErrorDB` functions to set `isOperational` accordingly.
- * 2. To implement email notification to the administrator for important errors, follow these steps:
- *    - Inside the `sendErrorProd` function, add a condition to check if the error is critical (use the `isOperational` property).
- *    - If the error is critical, send an email notification to the administrator using your preferred email library or service.
- *    - Provide appropriate instructions or placeholders to configure the email notification with the administrator's email address and other necessary details.
- *    - Make sure to handle any errors that may occur during the email sending process.
- * 3. Test the error handling and email notification functionality in a production environment to ensure it works as expected.
  */
 
 const handleCastErrorDB = (err) => {
@@ -84,6 +77,22 @@ const sendErrorProd = (err, res) => {
     });
   }
 };
+
+/**
+ *
+ * Step-by-step instructions for TODO:
+ * 1. To flag errors based on their importance, use the `isOperational` property of the error object.
+ *    - Set `isOperational` to `true` for critical errors that require immediate attention.
+ *    - Set `isOperational` to `false` for less important errors.
+ *    - Modify the `handleCastErrorDB`, `handleDuplicateFieldsDB`, and `handleValidationErrorDB` functions to set `isOperational` accordingly.
+ * 2. To implement email notification to the administrator for important errors, follow these steps:
+ *    - Inside the `sendErrorProd` function, add a condition to check if the error is critical (use the `isOperational` property).
+ *    - If the error is critical, send an email notification to the administrator using your preferred email library or service.
+ *    - Provide appropriate instructions or placeholders to configure the email notification with the administrator's email address and other necessary details.
+ *    - Make sure to handle any errors that may occur during the email sending process.
+ * 3. Test the error handling and email notification functionality in a production environment to ensure it works as expected.
+ *
+ */
 
 /**
  * Handles errors in the Express middleware.
