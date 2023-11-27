@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
 const helmet = require('helmet'); // set security HTTP headers
+const mongoSanitize = require('express-mongo-sanitize'); // sanitize user input from malicious MongoDB operators
+const xss = require('xss-clean'); // clean user input from malicious HTML code
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -34,7 +36,15 @@ app.use('/api', limiter);
 
 // Body parser, reading data from body into req.body
 app.use(express.json({ limit: '10kb' })); // limit the size of the body to 10kb
-app.use(cookieParser()); // parse the cookie header and body into req.body and req.headers
+// app.use(cookieParser()); // parse the cookie header and body into req.body and req.headers
+
+// Data sanitization against NoSQL query injection
+// (e.g. { "email": { "$gt": "" }, "password": "password1234" })
+// (e.g. { "email": { "$gt": "" }, "password": { "$gt": "" } })
+app.use(mongoSanitize());
+
+// Data sanitization against XSS
+app.use(xss());
 
 // Test middleware
 app.use((req, res, next) => {
