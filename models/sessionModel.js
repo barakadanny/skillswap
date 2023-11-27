@@ -84,6 +84,14 @@ sessionSchema.pre('save', function (next) {
   next();
 });
 
+sessionSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'moderators',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 const Session = mongoose.model('Session', sessionSchema);
 
 module.exports = Session;
