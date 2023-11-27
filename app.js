@@ -4,6 +4,7 @@ const rateLimit = require('express-rate-limit');
 const helmet = require('helmet'); // set security HTTP headers
 const mongoSanitize = require('express-mongo-sanitize'); // sanitize user input from malicious MongoDB operators
 const xss = require('xss-clean'); // clean user input from malicious HTML code
+const hpp = require('hpp'); // prevent HTTP parameter pollution
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -45,6 +46,15 @@ app.use(mongoSanitize());
 
 // Data sanitization against XSS
 app.use(xss());
+
+// Prevent parameter pollution
+// e.g. /api/v1/tours?sort=duration&sort=price
+app.use(
+  hpp({
+    // Whitelist allows duplicate parameters in the query string
+    whitelist: ['subject', 'maxParticipant', 'difficulty'],
+  })
+);
 
 // Test middleware
 app.use((req, res, next) => {
