@@ -70,7 +70,7 @@ const sessionSchema = new mongoose.Schema({
       message: 'Session date must be in the future',
     },
   },
-  modartors: [
+  moderators: [
     {
       type: mongoose.Schema.ObjectId,
       ref: 'User',
