@@ -1,6 +1,20 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 
+/**
+ * TODO:
+ *
+ * - Add validation for session date
+ * - Add session duration
+ * - Add session price when it requires payment
+ * - Add session Notes: the moderator can add notes to the session
+ * - Add session rating
+ * - Add session comments
+ * - Add session tags
+ * - Add session reviews
+ *
+ */
+
 const sessionSchema = new mongoose.Schema({
   subject: {
     type: String,
@@ -34,12 +48,34 @@ const sessionSchema = new mongoose.Schema({
     type: String,
     required: [true, 'A session must have a image cover'],
   },
+  sessionUrl: {
+    type: String,
+    required: [true, 'A session must have a meeting url'],
+  },
   images: [String],
   createdAt: {
     type: Date,
     default: Date.now(),
   },
-  date: [Date],
+  // validate the date
+  // date: [Date],
+  date: {
+    type: Date,
+    required: [true, 'A session must have a date'],
+    validate: {
+      validator: function (value) {
+        // Check if the date is not in the past
+        return value >= new Date();
+      },
+      message: 'Session date must be in the future',
+    },
+  },
+  modartors: [
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: 'User',
+    },
+  ],
 });
 
 // DOCUMENT MIDDLEWARE: runs before save() and create()
