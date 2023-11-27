@@ -23,7 +23,10 @@ exports.getAllSessions = catchAsync(async (req, res, next) => {
 });
 
 exports.getSession = catchAsync(async (req, res, next) => {
-  const session = await Session.findById(req.params.id);
+  const session = await Session.findById(req.params.id).populate({
+    path: 'moderators',
+    select: '-__v -passwordChangedAt',
+  });
 
   if (!session) {
     return next(new AppError('No session found with that ID', 404));
