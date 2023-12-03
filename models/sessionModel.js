@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const User = require('./userModel');
 
 /**
  * TODO:
@@ -76,6 +77,12 @@ const sessionSchema = new mongoose.Schema({
       ref: 'User',
     },
   ],
+  // Field to store the user ID who created the session
+  user: {
+    type: mongoose.Schema.ObjectId,
+    ref: 'User',
+    required: [true, 'A session must have a user'],
+  },
 });
 
 // DOCUMENT MIDDLEWARE: runs before save() and create()
@@ -88,6 +95,9 @@ sessionSchema.pre(/^find/, function (next) {
   this.populate({
     path: 'moderators',
     select: '-__v -passwordChangedAt',
+  }).populate({
+    path: 'user',
+    select: 'name photo',
   });
   next();
 });
