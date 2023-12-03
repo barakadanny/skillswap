@@ -85,6 +85,9 @@ const sessionSchema = new mongoose.Schema({
   },
 });
 
+sessionSchema.index({ maxParticipant: 1 });
+sessionSchema.index({ slug: 1 });
+
 // DOCUMENT MIDDLEWARE: runs before save() and create()
 sessionSchema.pre('save', function (next) {
   this.slug = slugify(this.subject, { lower: true });
