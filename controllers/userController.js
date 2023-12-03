@@ -21,6 +21,11 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+exports.getMe = (req, res, next) => {
+  req.params.id = req.user.id;
+  next();
+};
+
 // TODO: Use factory methods instead of controller functions
 exports.getAllUsers = catchAsync(async (req, res) => {
   const users = await User.find();
