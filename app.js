@@ -67,6 +67,10 @@ app.use((req, res, next) => {
 });
 
 // 2) ROUTES
+app.get('/', (req, res) => {
+  res.status(200).render('layouts/main');
+});
+
 app.use('/api/v1/sessions', sessionRouter);
 app.use('/api/v1/users', userRouter);
 
