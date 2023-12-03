@@ -1,83 +1,17 @@
 const Session = require('./../models/sessionModel');
 const APIFeatures = require('./../utils/apiFeatures');
+const factory = require('./handlerFactory');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
 
-exports.getAllSessions = catchAsync(async (req, res, next) => {
-  // EXECUTE QUERY
-  const features = new APIFeatures(Session.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
-  const sessions = await features.query;
+exports.getAllSessions = factory.getAll(Session);
 
-  // SEND RESPONSE
-  res.status(200).json({
-    status: 'success',
-    results: sessions.length,
-    data: {
-      sessions,
-    },
-  });
-});
+exports.getSession = factory.getOne(Session);
 
-exports.getSession = catchAsync(async (req, res, next) => {
-  const session = await Session.findById(req.params.id);
+exports.createSession = factory.createOne(Session);
 
-  if (!session) {
-    return next(new AppError('No session found with that ID', 404));
-  }
+exports.updateSession = factory.updateOne(Session);
 
-  res.status(200).json({
-    status: 'success',
-    data: {
-      session,
-    },
-  });
-});
-
-exports.createSession = catchAsync(async (req, res, next) => {
-  const newSession = await Session.create(req.body);
-
-  res.status(201).json({
-    status: 'success',
-    data: {
-      session: newSession,
-    },
-  });
-});
-
-exports.updateSession = catchAsync(async (req, res, next) => {
-  const session = await Session.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true,
-  });
-
-  if (!session) {
-    return next(new AppError('No session found with that ID', 404));
-  }
-
-  res.status(200).json({
-    status: 'success',
-    data: {
-      session,
-    },
-  });
-});
-
-exports.deleteSession = catchAsync(async (req, res, next) => {
-  const session = await Session.findByIdAndDelete(req.params.id);
-
-  if (!session) {
-    return next(new AppError('No session found with that ID', 404));
-  }
-
-  res.status(204).json({
-    status: 'success',
-    data: null,
-  });
-});
+exports.deleteSession = factory.deleteOne(Session);
 
 exports.getSessionStats = catchAsync(async (req, res, next) => {
   const stats = await Session.aggregate([
